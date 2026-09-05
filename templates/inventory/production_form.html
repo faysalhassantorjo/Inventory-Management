@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block header_title %}Record Production{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-800">
+    <h2 class="text-xl font-semibold text-gray-100 mb-6">Record New Production</h2>
+    
+    <form method="POST" action="{% url 'inventory:production_create' %}" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+            <label for="sku" class="block text-sm font-medium text-gray-300">Select SKU</label>
+            <select id="sku" name="sku" required class="mt-1.5 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-lg">
+                <option value="">-- Choose an SKU --</option>
+                {% for sku in skus %}
+                <option value="{{ sku.id }}">{{ sku.sku }} - {{ sku.product.name }} (Size: {{ sku.size }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div>
+            <label for="quantity" class="block text-sm font-medium text-gray-300">Quantity Produced</label>
+            <input type="number" name="quantity" id="quantity" min="1" required class="mt-1.5 block w-full border border-gray-700 bg-gray-800 text-gray-100 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm">
+        </div>
+        
+        <div>
+            <label for="reference" class="block text-sm font-medium text-gray-300">Reference Number (Optional)</label>
+            <input type="text" name="reference" id="reference" class="mt-1.5 block w-full border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm" placeholder="e.g. BATCH-001">
+        </div>
+        
+        <div class="pt-4 flex justify-end">
+            <button type="submit" class="bg-blue-600 border border-transparent rounded-lg shadow-sm py-2.5 px-5 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-colors">
+                Record Production
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

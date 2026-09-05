@@ -1,0 +1,963 @@
+{% extends "base.html" %}
+
+{% block header_title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- ========================================================= -->
+    <!-- PRODUCT HEADER -->
+    <!-- ========================================================= -->
+
+    <div class="bg-gray-900 border border-gray-800 rounded-xl">
+
+        <div class="px-6 py-5">
+
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+                <!-- Product identity -->
+                <div class="flex items-center gap-4 min-w-0">
+
+                    <!-- Thumbnail -->
+                    {% if product.thumbnail %}
+                        <img
+                            src="{{ product.thumbnail.url }}"
+                            alt="{{ product.name }}"
+                            class="w-16 h-16 rounded-lg object-cover
+                                   border border-gray-800 shrink-0"
+                        >
+                    {% else %}
+                        <div
+                            class="w-16 h-16 rounded-lg
+                                   bg-gray-800
+                                   border border-gray-800
+                                   flex items-center justify-center
+                                   shrink-0"
+                        >
+                            <svg
+                                class="w-6 h-6 text-gray-300"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="1.7"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-8h.01M5 20h14a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v14a1 1 0 001 1z"
+                                />
+                            </svg>
+                        </div>
+                    {% endif %}
+
+
+                    <!-- Basic information -->
+                    <div class="min-w-0">
+
+                        <div class="flex flex-wrap items-center gap-2">
+
+                            <h1 class="text-xl font-semibold text-gray-100 tracking-tight">
+                                {{ product.name }}
+                            </h1>
+
+                            {% if product.is_active %}
+
+                                <span
+                                    class="inline-flex items-center gap-1.5
+                                           rounded-full
+                                           bg-green-950/80
+                                           px-2 py-1
+                                           text-xs font-medium
+                                           text-green-400"
+                                >
+                                    <span
+                                        class="w-1.5 h-1.5
+                                               rounded-full
+                                               bg-green-950/800"
+                                    ></span>
+
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="inline-flex items-center gap-1.5
+                                           rounded-full
+                                           bg-gray-800
+                                           px-2 py-1
+                                           text-xs font-medium
+                                           text-gray-500"
+                                >
+                                    <span
+                                        class="w-1.5 h-1.5
+                                               rounded-full
+                                               bg-gray-400"
+                                    ></span>
+
+                                    Archived
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ product.category.name }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2 shrink-0">
+
+                    <a
+                        href="{% url 'products:product_edit' product.pk %}"
+                        class="inline-flex items-center gap-2
+                               px-3 py-2
+                               border border-gray-700
+                               rounded-md
+                               bg-gray-900
+                               text-sm font-medium
+                               text-gray-300
+                               hover:bg-gray-800
+                               transition-colors"
+                    >
+
+                        <svg
+                            class="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 8.5-8.5z"
+                            />
+                        </svg>
+
+                        Edit
+
+                    </a>
+
+
+                    <form
+                        method="post"
+                        action="{% url 'products:product_archive' product.pk %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="inline-flex items-center gap-2
+                                   px-3 py-2
+                                   border border-gray-700
+                                   rounded-md
+                                   bg-gray-900
+                                   text-sm font-medium
+                                   transition-colors
+                                   {% if product.is_active %}
+                                       text-red-400
+                                       hover:bg-red-950/80
+                                       hover:border-red-200
+                                   {% else %}
+                                       text-green-600
+                                       hover:bg-green-950/80
+                                       hover:border-green-200
+                                   {% endif %}"
+                        >
+
+                            {% if product.is_active %}
+
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M20 12H4"
+                                    />
+                                </svg>
+
+                                Archive
+
+                            {% else %}
+
+                                <svg
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 12h14m-7-7 7 7-7 7"
+                                    />
+                                </svg>
+
+                                Activate
+
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================================= -->
+    <!-- PRICING & INVENTORY SUMMARY -->
+    <!-- ========================================================= -->
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+
+        <!-- Selling Price -->
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+            <p
+                class="text-xs font-medium
+                       text-gray-500
+                       uppercase tracking-wide"
+            >
+                Selling price
+            </p>
+
+            <div class="mt-2 flex items-baseline gap-2">
+
+                <span class="text-2xl font-semibold text-gray-100">
+                    ৳{{ product.price }}
+                </span>
+
+                {% if product.active_discount %}
+
+                    <span
+                        class="text-sm
+                               text-gray-500
+                               line-through"
+                    >
+                        ৳{{ product.base_price }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if product.active_discount %}
+
+                <div class="mt-3 flex items-center gap-2">
+
+                    <span
+                        class="inline-flex items-center
+                               rounded-full
+                               bg-red-950/80
+                               px-2 py-1
+                               text-xs font-semibold
+                               text-red-400"
+                    >
+                        {{ product.active_discount.percentage }}% OFF
+                    </span>
+
+                    <span class="text-xs text-gray-500">
+                        Currently active
+                    </span>
+
+                </div>
+
+            {% else %}
+
+                <p class="mt-2 text-xs text-gray-500">
+                    No active discount
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- Base Price -->
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+            <p
+                class="text-xs font-medium
+                       text-gray-500
+                       uppercase tracking-wide"
+            >
+                Base price
+            </p>
+
+            <p class="mt-2 text-2xl font-semibold text-gray-100">
+                ৳{{ product.base_price }}
+            </p>
+
+            <p class="mt-2 text-xs text-gray-500">
+                Original catalog price
+            </p>
+
+        </div>
+
+
+
+        <!-- Total Stock -->
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+            <p
+                class="text-xs font-medium
+                       text-gray-500
+                       uppercase tracking-wide"
+            >
+                Total stock
+            </p>
+
+            <div class="mt-2 flex items-baseline gap-2">
+
+                <span
+                    class="text-2xl font-semibold
+                    {% if product.total_stock == 0 %}
+                        text-red-400
+                    {% else %}
+                        text-gray-100
+                    {% endif %}"
+                >
+                    {{ product.total_stock }}
+                </span>
+
+                <span class="text-sm text-gray-500">
+                    units
+                </span>
+
+            </div>
+
+            <p class="mt-2 text-xs text-gray-500">
+                Across all sizes
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================================= -->
+    <!-- ACTIVE DISCOUNT -->
+    <!-- ========================================================= -->
+
+    {% if product.active_discount %}
+
+    <div
+        class="bg-gray-900
+               border border-gray-800
+               rounded-xl
+               overflow-hidden"
+    >
+
+        <div
+            class="px-6 py-4
+                   border-b border-gray-800
+                   flex flex-col gap-2
+                   sm:flex-row
+                   sm:items-center
+                   sm:justify-between"
+        >
+
+            <div>
+
+                <h2 class="text-sm font-semibold text-gray-100">
+                    Active discount
+                </h2>
+
+                <p class="mt-0.5 text-xs text-gray-500">
+                    Current promotional pricing for this product.
+                </p>
+
+            </div>
+
+
+            <span
+                class="inline-flex items-center
+                       self-start
+                       rounded-full
+                       bg-green-950/80
+                       px-2.5 py-1
+                       text-xs font-semibold
+                       text-green-400"
+            >
+                Active
+            </span>
+
+        </div>
+
+
+        <div class="px-6 py-5">
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+                <!-- Discount -->
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Discount
+                    </p>
+
+                    <p class="mt-1 text-lg font-semibold text-gray-100">
+                        {{ product.active_discount.percentage }}%
+                    </p>
+
+                </div>
+
+
+                <!-- Start -->
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Starts
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-100">
+                        {{ product.active_discount.starts_at|date:"d M Y, h:i A" }}
+                    </p>
+
+                </div>
+
+
+                <!-- End -->
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Ends
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-100">
+                        {{ product.active_discount.ends_at|date:"d M Y, h:i A" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- ========================================================= -->
+    <!-- SIZES & INVENTORY -->
+    <!-- ========================================================= -->
+
+    <div
+        class="bg-gray-900
+               border border-gray-800
+               rounded-xl
+               overflow-hidden"
+    >
+
+        <!-- Section header -->
+
+        <div
+            class="px-6 py-5
+                   border-b border-gray-800
+                   flex flex-col gap-3
+                   sm:flex-row
+                   sm:items-center
+                   sm:justify-between"
+        >
+
+            <div>
+
+                <h2 class="text-sm font-semibold text-gray-100">
+                    Sizes & inventory
+                </h2>
+
+                <p class="mt-0.5 text-xs text-gray-500">
+                    Each size has its own SKU, measurements and stock.
+                </p>
+
+            </div>
+
+
+            <!-- Total stock -->
+
+            <div
+                class="inline-flex items-center
+                       gap-2
+                       self-start sm:self-auto
+                       rounded-md
+                       bg-gray-800
+                       border border-gray-800
+                       px-3 py-2"
+            >
+
+                <span class="text-xs text-gray-500">
+                    Total
+                </span>
+
+                <span class="text-sm font-semibold text-gray-100">
+                    {{ product.total_stock }}
+                </span>
+
+                <span class="text-xs text-gray-500">
+                    units
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Table -->
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead>
+
+                    <tr
+                        class="border-b
+                               border-gray-800
+                               bg-gray-800/80"
+                    >
+
+                        <th
+                            class="px-6 py-3.5
+                                   text-left
+                                   text-xs font-semibold
+                                   text-gray-500
+                                   uppercase tracking-wider"
+                        >
+                            SKU
+                        </th>
+
+                        <th
+                            class="px-6 py-3.5
+                                   text-left
+                                   text-xs font-semibold
+                                   text-gray-500
+                                   uppercase tracking-wider"
+                        >
+                            Size
+                        </th>
+
+                        <th
+                            class="px-6 py-3.5
+                                   text-left
+                                   text-xs font-semibold
+                                   text-gray-500
+                                   uppercase tracking-wider"
+                        >
+                            Measurements
+                        </th>
+
+                        <th
+                            class="px-6 py-3.5
+                                   text-right
+                                   text-xs font-semibold
+                                   text-gray-500
+                                   uppercase tracking-wider"
+                        >
+                            Stock
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for spec in specs %}
+
+                    <tr
+                        class="border-b
+                               border-gray-800
+                               last:border-b-0
+                               hover:bg-gray-800/50
+                               transition-colors"
+                    >
+
+                        <!-- SKU -->
+
+                        <td
+                            class="px-6 py-4
+                                   whitespace-nowrap"
+                        >
+
+                            <span
+                                class="inline-flex
+                                       text-xs font-mono
+                                       font-medium
+                                       text-gray-300
+                                       bg-gray-800
+                                       border border-gray-800
+                                       px-2 py-1
+                                       rounded"
+                            >
+                                {{ spec.sku }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Size -->
+
+                        <td
+                            class="px-6 py-4
+                                   whitespace-nowrap"
+                        >
+
+                            <span
+                                class="inline-flex items-center
+                                       rounded-md
+                                       bg-gray-800
+                                       border border-gray-800
+                                       px-2.5 py-1
+                                       text-sm font-semibold
+                                       text-gray-100"
+                            >
+                                {{ spec.size }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- Measurements -->
+
+                        <td class="px-6 py-4">
+
+                            {% if spec.measurements %}
+
+                                <div
+                                    class="flex flex-wrap
+                                           gap-x-6 gap-y-2"
+                                >
+
+                                    {% for key, val in spec.measurements.items %}
+
+                                        <div
+                                            class="flex items-center
+                                                   gap-1.5"
+                                        >
+
+                                            <span
+                                                class="text-xs
+                                                       text-gray-500"
+                                            >
+                                                {{ key }}
+                                            </span>
+
+                                            <span
+                                                class="text-xs
+                                                       font-medium
+                                                       text-gray-300"
+                                            >
+                                                {{ val }}
+                                            </span>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="text-sm text-gray-500">
+                                    No measurements
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Stock -->
+
+                        <td
+                            class="px-6 py-4
+                                   whitespace-nowrap
+                                   text-right"
+                        >
+
+                            {% if spec.stock == 0 %}
+
+                                <span
+                                    class="inline-flex
+                                           items-center gap-1.5
+                                           text-sm font-semibold
+                                           text-red-400"
+                                >
+
+                                    <span
+                                        class="w-1.5 h-1.5
+                                               rounded-full
+                                               bg-red-950/800"
+                                    ></span>
+
+                                    Out of stock
+
+                                </span>
+
+                            {% elif spec.stock <= 5 %}
+
+                                <span
+                                    class="inline-flex
+                                           items-center gap-1.5
+                                           text-sm font-semibold
+                                           text-amber-600"
+                                >
+
+                                    <span
+                                        class="w-1.5 h-1.5
+                                               rounded-full
+                                               bg-amber-950/800"
+                                    ></span>
+
+                                    {{ spec.stock }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="inline-flex
+                                           items-center gap-1.5
+                                           text-sm font-semibold
+                                           text-gray-100"
+                                >
+
+                                    <span
+                                        class="w-1.5 h-1.5
+                                               rounded-full
+                                               bg-green-950/800"
+                                    ></span>
+
+                                    {{ spec.stock }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            <div class="py-14 text-center">
+
+                                <div
+                                    class="mx-auto w-10 h-10
+                                           rounded-lg
+                                           bg-gray-800
+                                           flex items-center
+                                           justify-center
+                                           text-gray-500"
+                                >
+
+                                    <svg
+                                        class="w-5 h-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.8"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a3 3 0 016 0M9 5h6"
+                                        />
+                                    </svg>
+
+                                </div>
+
+
+                                <p
+                                    class="mt-3
+                                           text-sm font-medium
+                                           text-gray-100"
+                                >
+                                    No sizes configured
+                                </p>
+
+                                <p
+                                    class="mt-1
+                                           text-xs
+                                           text-gray-500"
+                                >
+                                    Add product sizes and measurements
+                                    to generate SKUs.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================================= -->
+    <!-- DESCRIPTION -->
+    <!-- ========================================================= -->
+
+    {% if product.description %}
+
+    <div
+        class="bg-gray-900
+               border border-gray-800
+               rounded-xl
+               overflow-hidden"
+    >
+
+        <div
+            class="px-6 py-4
+                   border-b border-gray-800"
+        >
+
+            <h2 class="text-sm font-semibold text-gray-100">
+                Product description
+            </h2>
+
+            <p class="mt-0.5 text-xs text-gray-500">
+                Product details and notes.
+            </p>
+
+        </div>
+
+
+        <div class="px-6 py-5">
+
+            <div
+                class="text-sm
+                       leading-7
+                       text-gray-500
+                       whitespace-pre-line
+                       max-w-4xl"
+            >
+                {{ product.description }}
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- ========================================================= -->
+    <!-- PRODUCT IMAGES -->
+    <!-- ========================================================= -->
+
+    {% if images %}
+
+    <div
+        class="bg-gray-900
+               border border-gray-800
+               rounded-xl
+               overflow-hidden"
+    >
+
+        <div
+            class="px-6 py-4
+                   border-b border-gray-800"
+        >
+
+            <h2 class="text-sm font-semibold text-gray-100">
+                Product images
+            </h2>
+
+            <p class="mt-0.5 text-xs text-gray-500">
+                Additional product gallery.
+            </p>
+
+        </div>
+
+
+        <div class="px-6 py-5">
+
+            <div class="flex flex-wrap gap-3">
+
+                {% for img in images %}
+
+                    <a
+                        href="{{ img.image.url }}"
+                        target="_blank"
+                        class="block group"
+                    >
+
+                        <img
+                            src="{{ img.image.url }}"
+                            alt="{{ product.name }}"
+                            class="w-24 h-24
+                                   rounded-lg
+                                   object-cover
+                                   border border-gray-800
+                                   group-hover:border-gray-400
+                                   transition-colors"
+                        >
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

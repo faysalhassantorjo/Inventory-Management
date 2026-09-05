@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block header_title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+
+<!-- Page Header -->
+<div class="mb-6">
+    <h1 class="text-lg font-semibold text-gray-100 tracking-tight">
+        {{ title }}
+    </h1>
+
+    <p class="mt-1 text-sm text-gray-400">
+        {% if purchase %}
+            Update fabric purchase record.
+        {% else %}
+            Record a new fabric purchase.
+        {% endif %}
+    </p>
+</div>
+
+<!-- Form -->
+<div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-sm">
+    <form method="post">
+        {% csrf_token %}
+        <!-- Form Content -->
+        <div class="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+            {% for field in form %}
+            <div class="{% if field.name == 'notes' or field.name == 'fabric_name' %}md:col-span-2{% endif %}">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1.5">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                        <span class="text-red-400">*</span>
+                    {% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <p class="mt-1.5 text-xs text-gray-500">
+                    {{ field.help_text }}
+                </p>
+                {% endif %}
+                {% if field.errors %}
+                <p class="mt-1.5 text-xs text-red-400">
+                    {{ field.errors|join:", " }}
+                </p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Actions -->
+        <div class="px-6 py-4 border-t border-gray-800 bg-gray-800/40 flex items-center justify-end gap-3">
+            <a href="{% url 'purchasing:fabric_purchase_list' %}" class="px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-sm font-medium text-gray-300 hover:bg-gray-700 transition-colors duration-150">
+                Cancel
+            </a>
+            <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors duration-150 shadow-sm">
+                {% if purchase %}
+                    Save Changes
+                {% else %}
+                    Record Purchase
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+</div>
+
+{% endblock %}

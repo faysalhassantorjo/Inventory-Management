@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block header_title %}Products{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-5">
+
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-lg font-semibold text-gray-100 tracking-tight">
+            Products
+        </h1>
+        <p class="mt-1 text-sm text-gray-400">
+            Manage your products, pricing, inventory, and availability.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'products:product_create' %}"
+        class="inline-flex items-center gap-2 px-4 py-2
+               bg-blue-600 text-white text-sm font-medium
+               rounded-lg hover:bg-blue-700
+               transition-colors duration-150 shadow-sm"
+    >
+        <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+            />
+        </svg>
+
+        Add Product
+    </a>
+</div>
+
+
+<!-- Search & Filters -->
+<div class="border border-gray-800 rounded-xl bg-gray-900 shadow-sm mb-5">
+
+    <form
+        method="get"
+        hx-get="{% url 'products:product_list' %}"
+        hx-target="#product-table-container"
+        hx-trigger="input delay:400ms from:[name=q], change from:select"
+        class="p-4"
+    >
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+
+            <!-- Search -->
+            <div class="md:col-span-6">
+
+                <label
+                    for="product-search"
+                    class="block text-xs font-semibold
+                           text-gray-400 uppercase tracking-wider mb-1.5"
+                >
+                    Search
+                </label>
+
+                <div class="relative">
+
+                    <svg
+                        class="absolute left-3 top-1/2 -translate-y-1/2
+                               w-4 h-4 text-gray-500 pointer-events-none"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"
+                        />
+                    </svg>
+
+                    <input
+                        id="product-search"
+                        type="text"
+                        name="q"
+                        value="{{ query }}"
+                        placeholder="Search by product name or SKU..."
+                        class="block w-full border border-gray-700
+                               rounded-lg text-sm py-2 pl-9 pr-3
+                               bg-gray-800 text-gray-100 placeholder-gray-500
+                               focus:outline-none focus:ring-2
+                               focus:ring-blue-500 focus:border-transparent"
+                    >
+
+                </div>
+            </div>
+
+
+            <!-- Category -->
+            <div class="md:col-span-3">
+
+                <label
+                    for="product-category"
+                    class="block text-xs font-semibold
+                           text-gray-400 uppercase tracking-wider mb-1.5"
+                >
+                    Category
+                </label>
+
+                <select
+                    id="product-category"
+                    name="category"
+                    class="block w-full border border-gray-700
+                           rounded-lg text-sm py-2 px-3
+                           text-gray-200 bg-gray-800
+                           focus:outline-none focus:ring-2
+                           focus:ring-blue-500 focus:border-transparent"
+                >
+                    <option value="">All Categories</option>
+
+                    {% for cat in categories %}
+                    <option
+                        value="{{ cat.id }}"
+                        {% if cat.id|stringformat:"s" == category_id %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="md:col-span-2">
+
+                <label
+                    for="product-status"
+                    class="block text-xs font-semibold
+                           text-gray-400 uppercase tracking-wider mb-1.5"
+                >
+                    Status
+                </label>
+
+                <select
+                    id="product-status"
+                    name="status"
+                    class="block w-full border border-gray-700
+                           rounded-lg text-sm py-2 px-3
+                           text-gray-200 bg-gray-800
+                           focus:outline-none focus:ring-2
+                           focus:ring-blue-500 focus:border-transparent"
+                >
+                    <option value="">All</option>
+
+                    <option
+                        value="active"
+                        {% if status == 'active' %}selected{% endif %}
+                    >
+                        Active
+                    </option>
+
+                    <option
+                        value="inactive"
+                        {% if status == 'inactive' %}selected{% endif %}
+                    >
+                        Archived
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Filter -->
+            <div class="md:col-span-1">
+
+                <button
+                    type="submit"
+                    class="w-full px-4 py-2
+                           border border-gray-700
+                           text-sm font-medium
+                           rounded-lg text-gray-300
+                           bg-gray-800 hover:bg-gray-700
+                           transition-colors duration-150"
+                >
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- Products Table -->
+<div class="border border-gray-800 rounded-xl bg-gray-900 shadow-sm overflow-hidden">
+
+    <!-- Table Header -->
+    <div
+        class="px-6 py-4 border-b border-gray-800
+               flex items-center justify-between"
+    >
+        <div>
+            <h2 class="text-sm font-semibold text-gray-100">
+                All Products
+            </h2>
+
+            <p class="text-xs text-gray-400 mt-0.5">
+                Browse and manage your product catalog.
+            </p>
+        </div>
+
+        {% if categories %}
+        <span class="text-xs text-gray-400">
+            {{ categories|length }} categories
+        </span>
+        {% endif %}
+    </div>
+
+
+    <!-- HTMX Product Table -->
+    <div id="product-table-container">
+        {% include "products/partials/product_table.html" %}
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

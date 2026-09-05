@@ -1,0 +1,38 @@
+<!-- HTMX-rendered spec row partial. index is passed from the view. -->
+<div class="spec-row border border-gray-700 bg-gray-800/60 rounded-xl p-4 space-y-4" id="spec-row-{{ index }}">
+    <div class="flex items-center justify-between">
+        <h4 class="text-sm font-semibold text-gray-200">Specification #{{ index|add:1 }}</h4>
+        <button type="button"
+                onclick="this.closest('.spec-row').remove()"
+                class="text-xs text-red-400 hover:text-red-300">
+            Remove
+        </button>
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-300">Size</label>
+        <input type="text" name="size[]" placeholder="e.g. 36, M, Free Size"
+               class="mt-1 block w-full border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm text-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required>
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-2">Measurements</label>
+        <div class="measurement-list-{{ index }} space-y-2">
+            <!-- One default measurement row -->
+            <div class="flex gap-2 items-center measurement-row">
+                <input type="text" name="mkey_{{ index }}[]" placeholder="e.g. Length"
+                       class="flex-1 border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm text-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" name="mval_{{ index }}[]" placeholder="e.g. 35 inch"
+                       class="flex-1 border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm text-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="button" onclick="this.closest('.measurement-row').remove()"
+                        class="text-gray-500 hover:text-red-400 text-xs px-2 py-1">✕</button>
+            </div>
+        </div>
+        <button type="button"
+                onclick="addMeasurement({{ index }})"
+                class="mt-2 text-xs text-blue-400 hover:text-blue-300 font-medium">
+            + Add Measurement
+        </button>
+    </div>
+</div>

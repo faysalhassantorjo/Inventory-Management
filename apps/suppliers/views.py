@@ -1,0 +1,44 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Supplier
+from .forms import SupplierForm
+
+@login_required
+def supplier_list(request):
+    suppliers = Supplier.objects.all().order_by('name')
+    return render(request, 'suppliers/supplier_list.html', {'suppliers': suppliers})
+
+@login_required
+def supplier_add(request):
+    if request.method == 'POST':
+        form = SupplierForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Supplier added successfully.')
+            return redirect('purchasing:supplier_list')
+    else:
+        form = SupplierForm()
+    
+    return render(request, 'suppliers/supplier_form.html', {
+        'form': form,
+        'title': 'Add Supplier'
+    })
+
+@login_required
+def supplier_edit(request, pk):
+    supplier = get_object_or_404(Supplier, pk=pk)
+    if request.method == 'POST':
+        form = SupplierForm(request.POST, instance=supplier)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Supplier updated successfully.')
+            return redirect('purchasing:supplier_list')
+    else:
+        form = SupplierForm(instance=supplier)
+    
+    return render(request, 'suppliers/supplier_form.html', {
+        'form': form,
+        'title': 'Edit Supplier',
+        'supplier': supplier
+    })

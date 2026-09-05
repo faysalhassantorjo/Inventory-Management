@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inventory Management{% endblock %}</title>
+    <!-- Tailwind CSS v4 Play CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+    <!-- 1. Alpine Collapse Plugin (MUST be loaded before Alpine core) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- 2. Alpine Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {% block extra_head %}{% endblock %}
+    <style>
+        /* Global Dark Form Element Styling */
+        input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]),
+        select,
+        textarea {
+            background-color: #1f2937 !important; /* gray-800 */
+            border-color: #374151 !important;     /* gray-700 */
+            color: #f3f4f6 !important;            /* gray-100 */
+        }
+        input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"])::placeholder,
+        textarea::placeholder {
+            color: #6b7280 !important;            /* gray-500 */
+        }
+        select option {
+            background-color: #1f2937 !important;
+            color: #f3f4f6 !important;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            background-color: #1f2937 !important;
+            border-color: #4b5563 !important;
+        }
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-950 text-gray-100 font-sans antialiased">
+    <div x-data="{ sidebarOpen: false }" class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        {% include 'components/sidebar.html' %}
+
+        <!-- Main Content -->
+        <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            <!-- Navbar -->
+            {% include 'components/navbar.html' %}
+
+            <!-- Page Content -->
+            <main class="w-full grow" style="padding: 1.5rem 2rem;">
+                <!-- Toast Notifications -->
+                <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% include 'components/toast.html' with message=message %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    {% block extra_body %}{% endblock %}
+</body>
+</html>

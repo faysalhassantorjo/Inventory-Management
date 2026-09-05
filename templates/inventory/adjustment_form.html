@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block header_title %}Manual Stock Adjustment{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-gray-900 p-8 rounded-xl shadow-sm border border-gray-800">
+    <h2 class="text-xl font-semibold text-gray-100 mb-6">Adjust Stock Manually</h2>
+    
+    <div class="bg-yellow-950/40 border-l-4 border-yellow-500/80 p-4 mb-6 rounded-r-lg">
+        <div class="flex">
+            <div>
+                <p class="text-sm text-yellow-300">
+                    Use this form only to correct physical inventory discrepancies (e.g. damaged goods, missing items, miscounts). Use positive numbers to add stock, and negative numbers to reduce it.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'inventory:adjustment_create' %}" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+            <label for="sku" class="block text-sm font-medium text-gray-300">Select SKU</label>
+            <select id="sku" name="sku" required class="mt-1.5 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-700 bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-lg">
+                <option value="">-- Choose an SKU --</option>
+                {% for sku in skus %}
+                <option value="{{ sku.id }}">{{ sku.sku }} - {{ sku.product.name }} (Current Stock: {{ sku.stock }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div>
+            <label for="quantity_change" class="block text-sm font-medium text-gray-300">Quantity Change</label>
+            <input type="number" name="quantity_change" id="quantity_change" required class="mt-1.5 block w-full border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm" placeholder="e.g. -2 or 5">
+        </div>
+        
+        <div>
+            <label for="reason" class="block text-sm font-medium text-gray-300">Reason</label>
+            <textarea name="reason" id="reason" rows="3" required class="mt-1.5 block w-full border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-500 rounded-lg shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm" placeholder="e.g. Found 2 damaged items during physical count"></textarea>
+        </div>
+        
+        <div class="pt-4 flex justify-end">
+            <button type="submit" class="bg-blue-600 border border-transparent rounded-lg shadow-sm py-2.5 px-5 inline-flex justify-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-colors">
+                Confirm Adjustment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

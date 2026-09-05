@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Inventory Management</title>
+    <!-- Tailwind CSS v4 Play CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="/static/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-950 flex h-screen items-center justify-center py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
+    <div class="max-w-md w-full space-y-8 bg-gray-900 p-10 rounded-xl shadow-xl border border-gray-800">
+        <div>
+            <div class="flex justify-center mb-2">
+                <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-xl">
+                    IM
+                </div>
+            </div>
+            <h2 class="mt-2 text-center text-2xl font-bold tracking-tight text-white">
+                Sign in to your account
+            </h2>
+            <p class="mt-1 text-center text-sm text-gray-400">Enter your credentials to access the inventory system</p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="text-red-400 bg-red-950/50 border border-red-800/60 py-2.5 px-3 rounded-lg text-sm text-center">Your username and password didn't match. Please try again.</div>
+            {% endif %}
+            
+            <input type="hidden" name="next" value="{{ next|default:'/' }}">
+            <div class="rounded-md space-y-4">
+                <div>
+                    <label for="username" class="block text-xs font-medium text-gray-300 mb-1">Username</label>
+                    <input id="username" name="username" type="text" required class="appearance-none rounded-lg relative block w-full px-3 py-2.5 border border-gray-700 bg-gray-800 placeholder-gray-500 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Enter username">
+                </div>
+                <div>
+                    <label for="password" class="block text-xs font-medium text-gray-300 mb-1">Password</label>
+                    <input id="password" name="password" type="password" required class="appearance-none rounded-lg relative block w-full px-3 py-2.5 border border-gray-700 bg-gray-800 placeholder-gray-500 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Enter password">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 transition-colors shadow-sm">
+                    Sign in
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
