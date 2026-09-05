@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-04l6vwl2x1&5#cpq^+#2nax(*1z(gd3iu&=*rg&s9py$o54#=i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".onrender.com", "127.0.0.1" ]
 
 
 # Application definition
@@ -134,6 +134,12 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://inventory-management-08n8.onrender.com/"
+]
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
