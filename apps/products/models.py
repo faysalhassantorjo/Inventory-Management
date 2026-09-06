@@ -3,6 +3,8 @@ from django.utils.text import slugify
 from django.utils import timezone
 from decimal import Decimal, ROUND_HALF_UP
 from django.core.exceptions import ValidationError
+from cloudinary.models import CloudinaryField
+
 
 
 class Category(models.Model):
@@ -38,9 +40,15 @@ class Product(models.Model):
         Category, on_delete=models.PROTECT, related_name='products'
     )
     description = models.TextField(blank=True)
-    thumbnail = models.ImageField(
-        upload_to='products/thumbnails/', blank=True, null=True
-    )
+
+    
+    thumbnail = CloudinaryField(
+            'image',
+            folder='products/thumbnails/',
+            blank=True,
+            null=True,
+        )
+    
 
     # Original/catalog price
     base_price = models.PositiveIntegerField(default=1000)
@@ -101,7 +109,9 @@ class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='images'
     )
-    image = models.ImageField(upload_to='products/images/')
+    image = CloudinaryField('image' ,folder='products/images/')
+    
+    
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
